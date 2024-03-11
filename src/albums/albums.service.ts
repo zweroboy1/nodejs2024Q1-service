@@ -3,11 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { Album } from './album.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService
   implements CRUDService<Album, CreateAlbumDto, CreateAlbumDto>
 {
+  constructor(private readonly tracksService: TracksService) { }
+
   private albums: Album[] = [];
 
   create(createAlbumDto: CreateAlbumDto): Album {
@@ -58,6 +61,14 @@ export class AlbumsService
     if (albumIndex === -1) {
       throw new NotFoundException(`Album with albumId ${id} is not found`);
     }
+
+    const tracksToRemove = this.tracksService.findByAlbumId(id);
+
+    tracksToRemove.forEach((track) => {
+      this.tracksService.updateAlbumId(track.id, null);
+    });
+
     this.albums.splice(albumIndex, 1);
+
   }
 }
