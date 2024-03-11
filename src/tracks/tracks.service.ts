@@ -40,6 +40,10 @@ export class TracksService
     return this.tracks.filter((track) => track.albumId === albumId);
   }
 
+  findByArtistId(artistId: string): Track[] {
+    return this.tracks.filter((track) => track.artistId === artistId);
+  }
+
   update(id: string, createTrackDto: CreateTrackDto): Track {
     const trackIndex = this.tracks.findIndex((a) => a.id === id);
     if (trackIndex === -1) {
@@ -61,6 +65,11 @@ export class TracksService
   updateAlbumId(trackId: string, albumId: string | null): void {
     const track = this.findOne(trackId);
     track.albumId = albumId;
+  }
+
+  updateArtistId(trackId: string, artistId: string | null): void {
+    const track = this.findOne(trackId);
+    track.artistId = artistId;
   }
 
   remove(id: string): void {

@@ -9,7 +9,7 @@ import { TracksService } from 'src/tracks/tracks.service';
 export class AlbumsService
   implements CRUDService<Album, CreateAlbumDto, CreateAlbumDto>
 {
-  constructor(private readonly tracksService: TracksService) { }
+  constructor(private readonly tracksService: TracksService) {}
 
   private albums: Album[] = [];
 
@@ -69,6 +69,5 @@ export class AlbumsService
     });
 
     this.albums.splice(albumIndex, 1);
-
   }
 }

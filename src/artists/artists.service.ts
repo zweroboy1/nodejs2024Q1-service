@@ -3,11 +3,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { Artist } from './artist.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class ArtistsService
   implements CRUDService<Artist, CreateArtistDto, CreateArtistDto>
 {
+  constructor(private readonly tracksService: TracksService) {}
   private artists: Artist[] = [];
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -57,6 +59,13 @@ export class ArtistsService
     if (artistIndex === -1) {
       throw new NotFoundException(`Artist with artistId ${id} is not found`);
     }
+
+    const tracksToRemove = this.tracksService.findByArtistId(id);
+
+    tracksToRemove.forEach((track) => {
+      this.tracksService.updateArtistId(track.id, null);
+    });
+
     this.artists.splice(artistIndex, 1);
   }
 }

@@ -9,4 +9,4 @@ import { TracksModule } from 'src/tracks/tracks.module';
   providers: [AlbumsService],
   exports: [AlbumsService],
 })
-export class AlbumsModule { }
+export class AlbumsModule {}
