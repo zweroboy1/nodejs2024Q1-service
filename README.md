@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/zweroboy1/nodejs2024Q1-service.git
 ```
 
 ## Installing NPM modules
@@ -17,21 +17,31 @@ git clone {repository URL}
 npm install
 ```
 
+__(Optional)__ Rename `.env.example` to `.env` and change the PORT number there.
+By default the application will run on port 4000. 
+
 ## Running application
 
 ```
-npm start
+npm run start
 ```
+
+To run the application with automatic restart use:
+
+```
+npm run start:dev
+```
+
+## Swagger
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+To preview `doc/api.ymp` file, you can use the VSCode extension: `Arjun.swagger-viewer` .
 
 ## Testing
 
 After application running open new terminal and enter:
-
-To run all tests without authorization
 
 ```
 npm run test
@@ -43,17 +53,7 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
+__Important:__ Before running any test case you must run application (see `Running application` )
 
 ### Auto-fix and format
 
