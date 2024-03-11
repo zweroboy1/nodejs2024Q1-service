@@ -5,7 +5,9 @@ import { Artist } from './artist.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 
 @Injectable()
-export class ArtistsService implements CRUDService<Artist, CreateArtistDto, CreateArtistDto> {
+export class ArtistsService
+  implements CRUDService<Artist, CreateArtistDto, CreateArtistDto>
+{
   private artists: Artist[] = [];
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -51,7 +53,7 @@ export class ArtistsService implements CRUDService<Artist, CreateArtistDto, Crea
   }
 
   remove(id: string): void {
-    const artistIndex = this.artists.findIndex(a => a.id === id);
+    const artistIndex = this.artists.findIndex((a) => a.id === id);
     if (artistIndex === -1) {
       throw new NotFoundException(`Artist with artistId ${id} is not found`);
     }

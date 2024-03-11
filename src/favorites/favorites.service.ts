@@ -1,27 +1,27 @@
-import { BadRequestException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { Favorites, FullFavorites } from './favorites.interface';
 import { TracksService } from 'src/tracks/tracks.service';
 import { AlbumsService } from 'src/albums/albums.service';
 import { ArtistsService } from 'src/artists/artists.service';
-import { Track } from 'src/tracks/track.interface';
-
-
 
 @Injectable()
 export class FavoritesService {
-
   constructor(
     private readonly tracksService: TracksService,
     private readonly albumsService: AlbumsService,
     private readonly artistsService: ArtistsService,
-  ) { }
+  ) {}
 
   private favorites: Favorites = {
     artists: [],
     albums: [],
     tracks: [],
   };
-
 
   findAll(): FullFavorites {
     const fullFavorites: FullFavorites = {
@@ -33,12 +33,12 @@ export class FavoritesService {
   }
 
   addTrackToFavorites(trackId: string): void {
-    let track: Track;
     try {
-      track = this.tracksService.findOne(trackId);
-    }
-    catch {
-      throw new UnprocessableEntityException('Track with specified id does not exist');
+      this.tracksService.findOne(trackId);
+    } catch {
+      throw new UnprocessableEntityException(
+        'Track with specified id does not exist',
+      );
     }
 
     if (this.favorites.tracks.some((favTrack) => favTrack === trackId)) {
@@ -49,7 +49,9 @@ export class FavoritesService {
   }
 
   removeTrackFromFavorites(trackId: string): void {
-    const index = this.favorites.tracks.findIndex((favTrack) => favTrack === trackId);
+    const index = this.favorites.tracks.findIndex(
+      (favTrack) => favTrack === trackId,
+    );
     if (index === -1) {
       throw new NotFoundException('Track not found in favorites');
     }
@@ -57,11 +59,12 @@ export class FavoritesService {
   }
 
   addAlbumToFavorites(albumId: string): void {
-    let album;
     try {
-      album = this.albumsService.findOne(albumId);
+      this.albumsService.findOne(albumId);
     } catch {
-      throw new UnprocessableEntityException('Album with specified id does not exist');
+      throw new UnprocessableEntityException(
+        'Album with specified id does not exist',
+      );
     }
 
     if (this.favorites.albums.some((favAlbum) => favAlbum === albumId)) {
@@ -72,7 +75,9 @@ export class FavoritesService {
   }
 
   removeAlbumFromFavorites(albumId: string): void {
-    const index = this.favorites.albums.findIndex((favAlbum) => favAlbum === albumId);
+    const index = this.favorites.albums.findIndex(
+      (favAlbum) => favAlbum === albumId,
+    );
     if (index === -1) {
       throw new NotFoundException('Album not found in favorites');
     }
@@ -81,11 +86,12 @@ export class FavoritesService {
   }
 
   addArtistToFavorites(artistId: string): void {
-    let artist;
     try {
-      artist = this.artistsService.findOne(artistId);
+      this.artistsService.findOne(artistId);
     } catch {
-      throw new UnprocessableEntityException('Artist with specified id does not exist');
+      throw new UnprocessableEntityException(
+        'Artist with specified id does not exist',
+      );
     }
 
     if (this.favorites.artists.some((favArtist) => favArtist === artistId)) {
@@ -96,7 +102,9 @@ export class FavoritesService {
   }
 
   removeArtistFromFavorites(artistId: string): void {
-    const index = this.favorites.artists.findIndex((favArtist) => favArtist === artistId);
+    const index = this.favorites.artists.findIndex(
+      (favArtist) => favArtist === artistId,
+    );
     if (index === -1) {
       throw new NotFoundException('Artist not found in favorites');
     }

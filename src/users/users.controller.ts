@@ -1,14 +1,25 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UsePipes, ValidationPipe, HttpCode, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  HttpCode,
+  BadRequestException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { validate } from 'uuid';
 import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
-
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
@@ -33,7 +44,10 @@ export class UsersController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  update(@Param('id') id: string, @Body() updatePasswordDto: UpdatePasswordDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
     if (!validate(id)) {
       throw new BadRequestException('Invalid userId format');
     }

@@ -5,7 +5,9 @@ import { Album } from './album.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 
 @Injectable()
-export class AlbumsService implements CRUDService<Album, CreateAlbumDto, CreateAlbumDto> {
+export class AlbumsService
+  implements CRUDService<Album, CreateAlbumDto, CreateAlbumDto>
+{
   private albums: Album[] = [];
 
   create(createAlbumDto: CreateAlbumDto): Album {
@@ -52,7 +54,7 @@ export class AlbumsService implements CRUDService<Album, CreateAlbumDto, CreateA
   }
 
   remove(id: string): void {
-    const albumIndex = this.albums.findIndex(a => a.id === id);
+    const albumIndex = this.albums.findIndex((a) => a.id === id);
     if (albumIndex === -1) {
       throw new NotFoundException(`Album with albumId ${id} is not found`);
     }

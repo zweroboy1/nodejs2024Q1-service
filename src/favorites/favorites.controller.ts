@@ -1,11 +1,18 @@
-import { Controller, Delete, Get, HttpCode, Param, Post, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
-
 @Controller('favs')
 export class FavoritesController {
-  constructor(private readonly favoritesService: FavoritesService) { }
+  constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
   findAll() {
@@ -26,7 +33,6 @@ export class FavoritesController {
     this.favoritesService.removeTrackFromFavorites(trackId);
     return;
   }
-
 
   @Post('album/:id')
   @UsePipes(new UuidValidator())
@@ -57,5 +63,4 @@ export class FavoritesController {
     this.favoritesService.removeArtistFromFavorites(artistId);
     return;
   }
-
 }

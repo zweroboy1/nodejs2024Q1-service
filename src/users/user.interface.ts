@@ -8,4 +8,4 @@ export interface User extends Resource {
   updatedAt: number;
 }
 
-export interface UserWithoutPassword extends Omit<User, 'password'> { }
+export type UserWithoutPassword = Omit<User, 'password'>;

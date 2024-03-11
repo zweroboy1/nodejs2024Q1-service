@@ -1,13 +1,24 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UsePipes, ValidationPipe, HttpCode, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  HttpCode,
+  BadRequestException,
+} from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { validate } from 'uuid';
 import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
-
 @Controller('artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService) { }
+  constructor(private readonly artistsService: ArtistsService) {}
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()

@@ -1,16 +1,23 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User, UserWithoutPassword } from './user.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 
 @Injectable()
-export class UsersService implements CRUDService<UserWithoutPassword, CreateUserDto, UpdatePasswordDto> {
+export class UsersService
+  implements CRUDService<UserWithoutPassword, CreateUserDto, UpdatePasswordDto>
+{
   private users: User[] = [];
 
   private excludePassword(user: User): UserWithoutPassword {
-    const { password, ...userWithoutPassword } = user;
+    const userWithoutPassword: User = { ...user };
+    delete userWithoutPassword.password;
     return userWithoutPassword;
   }
 
@@ -28,7 +35,7 @@ export class UsersService implements CRUDService<UserWithoutPassword, CreateUser
   }
 
   findAll(): UserWithoutPassword[] {
-    return this.users.map(user => this.excludePassword(user));
+    return this.users.map((user) => this.excludePassword(user));
   }
 
   findOne(id: string): UserWithoutPassword {
@@ -44,7 +51,10 @@ export class UsersService implements CRUDService<UserWithoutPassword, CreateUser
     return user;
   }
 
-  update(id: string, updatePasswordDto: UpdatePasswordDto): UserWithoutPassword {
+  update(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): UserWithoutPassword {
     const userIndex = this.users.findIndex((u) => u.id === id);
     if (userIndex === -1) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -66,7 +76,7 @@ export class UsersService implements CRUDService<UserWithoutPassword, CreateUser
   }
 
   remove(id: string): void {
-    const userIndex = this.users.findIndex(u => u.id === id);
+    const userIndex = this.users.findIndex((u) => u.id === id);
     if (userIndex === -1) {
       throw new NotFoundException(`User with id ${id} not found`);
     }

@@ -5,7 +5,9 @@ import { Track } from './track.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 
 @Injectable()
-export class TracksService implements CRUDService<Track, CreateTrackDto, CreateTrackDto> {
+export class TracksService
+  implements CRUDService<Track, CreateTrackDto, CreateTrackDto>
+{
   private tracks: Track[] = [];
 
   create(createTrackDto: CreateTrackDto): Track {
@@ -53,7 +55,7 @@ export class TracksService implements CRUDService<Track, CreateTrackDto, CreateT
   }
 
   remove(id: string): void {
-    const trackIndex = this.tracks.findIndex(a => a.id === id);
+    const trackIndex = this.tracks.findIndex((a) => a.id === id);
     if (trackIndex === -1) {
       throw new NotFoundException(`Track with trackId ${id} is not found`);
     }

@@ -1,13 +1,24 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UsePipes, ValidationPipe, HttpCode, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  HttpCode,
+  BadRequestException,
+} from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { validate } from 'uuid';
 import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
-
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) { }
+  constructor(private readonly albumsService: AlbumsService) {}
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()

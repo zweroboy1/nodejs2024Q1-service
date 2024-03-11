@@ -5,6 +5,6 @@ import { ArtistsController } from './artists.controller';
 @Module({
   controllers: [ArtistsController],
   providers: [ArtistsService],
-  exports: [ArtistsService]
+  exports: [ArtistsService],
 })
-export class ArtistsModule { }
+export class ArtistsModule {}
