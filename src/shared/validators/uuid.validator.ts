@@ -6,7 +6,7 @@ import { validate } from 'uuid';
 export class UuidValidator implements PipeTransform<string> {
   transform(value: string): string {
     if (!validate(value)) {
-      throw new BadRequestException('Invalid userId format');
+      throw new BadRequestException('Id should be in the uuid format');
     }
     return value;
   }

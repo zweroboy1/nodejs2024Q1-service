@@ -30,6 +30,10 @@ export class ArtistsService implements CRUDService<Artist, CreateArtistDto, Crea
     return artist;
   }
 
+  findManyByIds(ids: string[]): Artist[] {
+    return this.artists.filter((artist) => ids.includes(artist.id));
+  }
+
   update(id: string, createArtistDto: CreateArtistDto): Artist {
     const artistIndex = this.artists.findIndex((a) => a.id === id);
     if (artistIndex === -1) {

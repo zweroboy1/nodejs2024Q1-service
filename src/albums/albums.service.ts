@@ -30,6 +30,10 @@ export class AlbumsService implements CRUDService<Album, CreateAlbumDto, CreateA
     return album;
   }
 
+  findManyByIds(ids: string[]): Album[] {
+    return this.albums.filter((album) => ids.includes(album.id));
+  }
+
   update(id: string, createAlbumDto: CreateAlbumDto): Album {
     const albumIndex = this.albums.findIndex((a) => a.id === id);
     if (albumIndex === -1) {

@@ -30,6 +30,10 @@ export class TracksService implements CRUDService<Track, CreateTrackDto, CreateT
     return track;
   }
 
+  findManyByIds(ids: string[]): Track[] {
+    return this.tracks.filter((track) => ids.includes(track.id));
+  }
+
   update(id: string, createTrackDto: CreateTrackDto): Track {
     const trackIndex = this.tracks.findIndex((a) => a.id === id);
     if (trackIndex === -1) {

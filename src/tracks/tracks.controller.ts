@@ -7,23 +7,23 @@ import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
 @Controller('Track')
 export class TracksController {
-  constructor(private readonly TracksService: TracksService) { }
+  constructor(private readonly tracksService: TracksService) { }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
-    return this.TracksService.create(createTrackDto);
+    return this.tracksService.create(createTrackDto);
   }
 
   @Get()
   findAll() {
-    return this.TracksService.findAll();
+    return this.tracksService.findAll();
   }
 
   @Get(':id')
   @UsePipes(new UuidValidator())
   findOne(@Param('id') id: string) {
-    return this.TracksService.findOne(id);
+    return this.tracksService.findOne(id);
   }
 
   @Put(':id')
@@ -32,13 +32,13 @@ export class TracksController {
     if (!validate(id)) {
       throw new BadRequestException('Invalid TrackId format');
     }
-    return this.TracksService.update(id, updateTrackDto);
+    return this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @UsePipes(new UuidValidator())
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    this.TracksService.remove(id);
+    this.tracksService.remove(id);
   }
 }
