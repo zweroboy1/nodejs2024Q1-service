@@ -39,6 +39,10 @@ export class AlbumsService
     return this.albums.filter((album) => ids.includes(album.id));
   }
 
+  findByArtistId(artistId: string): Album[] {
+    return this.albums.filter((album) => album.artistId === artistId);
+  }
+
   update(id: string, createAlbumDto: CreateAlbumDto): Album {
     const albumIndex = this.albums.findIndex((a) => a.id === id);
     if (albumIndex === -1) {
@@ -54,6 +58,11 @@ export class AlbumsService
 
     this.albums[albumIndex] = updatedAlbum;
     return updatedAlbum;
+  }
+
+  updateArtistId(albumId: string, artistId: string | null): void {
+    const album = this.findOne(albumId);
+    album.artistId = artistId;
   }
 
   remove(id: string): void {

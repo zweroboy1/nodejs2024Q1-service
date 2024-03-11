@@ -4,12 +4,16 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { Artist } from './artist.interface';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 import { TracksService } from 'src/tracks/tracks.service';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
 export class ArtistsService
   implements CRUDService<Artist, CreateArtistDto, CreateArtistDto>
 {
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(
+    private readonly tracksService: TracksService,
+    private readonly albumsService: AlbumsService,
+  ) {}
   private artists: Artist[] = [];
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -64,6 +68,12 @@ export class ArtistsService
 
     tracksToRemove.forEach((track) => {
       this.tracksService.updateArtistId(track.id, null);
+    });
+
+    const albumsToRemove = this.albumsService.findByArtistId(id);
+
+    albumsToRemove.forEach((album) => {
+      this.albumsService.updateArtistId(album.id, null);
     });
 
     this.artists.splice(artistIndex, 1);
