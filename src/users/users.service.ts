@@ -6,8 +6,22 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { User, UserWithoutPassword } from './user.interface';
+//import { User, UserWithoutPassword } from './user.interface';
+
+import { User } from '@prisma/client';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+type UserWithoutPassword = Omit<User, 'password'>;
+
+const userSelectFields = {
+  id: true,
+  login: true,
+  version: true,
+  createdAt: true,
+  updatedAt: true,
+};
+
 
 @Injectable()
 export class UsersService
@@ -15,27 +29,27 @@ export class UsersService
 {
   private users: User[] = [];
 
+  constructor(private prisma: PrismaService) { }
+
+
   private excludePassword(user: User): UserWithoutPassword {
     const userWithoutPassword: User = { ...user };
     delete userWithoutPassword.password;
     return userWithoutPassword;
   }
 
-  create(createUserDto: CreateUserDto): UserWithoutPassword {
-    const newUser: User = {
-      id: uuidv4(),
-      ...createUserDto,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-
-    this.users.push(newUser);
-    return this.excludePassword(newUser);
+  async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
+    const newUser = await this.prisma.user.create({
+      data: createUserDto,
+      select: userSelectFields,
+    });
+    return newUser;
   }
 
-  findAll(): UserWithoutPassword[] {
-    return this.users.map((user) => this.excludePassword(user));
+
+  async findAll(): Promise<UserWithoutPassword[]> {
+    const users = await this.prisma.user.findMany({ select: userSelectFields });
+    return users;
   }
 
   findOne(id: string): UserWithoutPassword {
@@ -68,7 +82,7 @@ export class UsersService
       ...this.users[userIndex],
       password: updatePasswordDto.newPassword,
       version: this.users[userIndex].version + 1,
-      updatedAt: Date.now(),
+      //updatedAt: Date.now(),
     };
 
     this.users[userIndex] = updatedUser;
