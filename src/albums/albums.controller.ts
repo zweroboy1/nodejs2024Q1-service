@@ -50,6 +50,6 @@ export class AlbumsController {
   @UsePipes(new UuidValidator())
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    this.albumsService.remove(id);
+    return this.albumsService.remove(id);
   }
 }

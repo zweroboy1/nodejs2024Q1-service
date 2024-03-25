@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import {
   IsString,
   IsNotEmpty,
@@ -6,7 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-export class CreateAlbumDto {
+export class CreateAlbumDto implements Prisma.AlbumCreateInput {
   @IsNotEmpty()
   @IsString()
   name: string;
