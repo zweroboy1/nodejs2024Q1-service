@@ -10,24 +10,23 @@ import {
   ValidationPipe,
   HttpCode,
   BadRequestException,
+  HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { validate } from 'uuid';
 import { UuidValidator } from 'src/shared/validators/uuid.validator';
+import { Prisma } from '@prisma/client';
 
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    const existingUser = this.usersService.findByLogin(createUserDto.login);
-    if (existingUser) {
-      throw new BadRequestException('User with this login already exists');
-    }
     return this.usersService.create(createUserDto);
   }
 
@@ -56,8 +55,14 @@ export class UsersController {
 
   @Delete(':id')
   @UsePipes(new UuidValidator())
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    this.usersService.remove(id);
+    try {
+      this.usersService.remove(id);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+    }
   }
 }

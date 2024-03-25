@@ -1,14 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-//import { User, UserWithoutPassword } from './user.interface';
-
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 import { CRUDService } from '../shared/interfaces/crud.service.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -39,11 +37,20 @@ export class UsersService
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
-    const newUser = await this.prisma.user.create({
-      data: createUserDto,
-      select: userSelectFields,
-    });
-    return newUser;
+    try {
+      const newUser = await this.prisma.user.create({
+        data: createUserDto,
+        select: userSelectFields,
+      });
+      return newUser;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new BadRequestException('User with this login already exists');
+        }
+      }
+      throw e;
+    }
   }
 
 
@@ -52,16 +59,14 @@ export class UsersService
     return users;
   }
 
-  findOne(id: string): UserWithoutPassword {
-    const user = this.users.find((u) => u.id === id);
+  async findOne(id: string): Promise<UserWithoutPassword> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: userSelectFields,
+    });
     if (!user) {
       throw new NotFoundException('Not found user with this userId');
     }
-    return this.excludePassword(user);
-  }
-
-  findByLogin(login: string): User {
-    const user = this.users.find((u) => u.login === login);
     return user;
   }
 
@@ -89,11 +94,7 @@ export class UsersService
     return this.excludePassword(updatedUser);
   }
 
-  remove(id: string): void {
-    const userIndex = this.users.findIndex((u) => u.id === id);
-    if (userIndex === -1) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-    this.users.splice(userIndex, 1);
+  async remove(id: string): Promise<void> {
+    await this.prisma.user.delete({ where: { id } });
   }
 }
