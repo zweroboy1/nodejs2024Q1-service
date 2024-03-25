@@ -16,7 +16,7 @@ const albumSelectFields = {
 export class AlbumsService
   implements CRUDService<AlbumInResponse, CreateAlbumDto, CreateAlbumDto>
 {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createAlbumDto: CreateAlbumDto): Promise<AlbumInResponse> {
     const newAlbum = await this.prisma.album.create({
@@ -65,30 +65,12 @@ export class AlbumsService
 
     return updatedAlbum;
   }
-  /*
-    updateArtistId(albumId: string, artistId: string | null): void {
-      const album = this.findOne(albumId);
-      album.artistId = artistId;
-    }
-  */
+
   async remove(id: string): Promise<void> {
     try {
       await this.prisma.album.delete({ where: { id } });
     } catch {
       throw new NotFoundException(`Album with albumId ${id} is not found`);
     }
-    /*
-        const albumIndex = this.albums.findIndex((a) => a.id === id);
-        if (albumIndex === -1) {
-          throw new NotFoundException(`Album with albumId ${id} is not found`);
-        }
-    
-        const tracksToRemove = this.tracksService.findByAlbumId(id);
-    
-        tracksToRemove.forEach((track) => {
-          this.tracksService.updateAlbumId(track.id, null);
-        });
-    
-        this.albums.splice(albumIndex, 1);*/
   }
 }

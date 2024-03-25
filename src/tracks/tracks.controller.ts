@@ -18,7 +18,7 @@ import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
 @Controller('Track')
 export class TracksController {
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(private readonly tracksService: TracksService) { }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
@@ -50,6 +50,6 @@ export class TracksController {
   @UsePipes(new UuidValidator())
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    this.tracksService.remove(id);
+    return this.tracksService.remove(id);
   }
 }
