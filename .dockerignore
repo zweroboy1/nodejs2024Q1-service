@@ -26,8 +26,4 @@
 **/dist
 LICENSE
 *.md
-.eslintrc*
-.prettierrc*
-test/
-coverage/
-jest.config.json
+/db
