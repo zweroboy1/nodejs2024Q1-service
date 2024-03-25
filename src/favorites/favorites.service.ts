@@ -25,9 +25,9 @@ export class FavoritesService {
 
   findAll(): FullFavorites {
     const fullFavorites: FullFavorites = {
-      artists: this.artistsService.findManyByIds(this.favorites.artists),
-      albums: this.albumsService.findManyByIds(this.favorites.albums),
-      tracks: this.tracksService.findManyByIds(this.favorites.tracks),
+      artists: [], //this.artistsService.findFavorites(this.favorites.artists),
+      albums: [], //this.albumsService.findManyByIds(this.favorites.albums),
+      tracks: [], //this.tracksService.findManyByIds(this.favorites.tracks),
     };
     return fullFavorites;
   }
