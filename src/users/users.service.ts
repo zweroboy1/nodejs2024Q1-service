@@ -11,6 +11,10 @@ import { CRUDService } from '../shared/interfaces/crud.service.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserWithoutPassword = Omit<User, 'password'>;
+type UserInResponse = Omit<UserWithoutPassword, 'createdAt' | 'updatedAt'> & {
+  createdAt: number;
+  updatedAt: number;
+};
 
 const userSelectFields = {
   id: true,
@@ -20,29 +24,27 @@ const userSelectFields = {
   updatedAt: true,
 };
 
-
 @Injectable()
 export class UsersService
-  implements CRUDService<UserWithoutPassword, CreateUserDto, UpdatePasswordDto>
+  implements CRUDService<UserInResponse, CreateUserDto, UpdatePasswordDto>
 {
-  private users: User[] = [];
+  constructor(private prisma: PrismaService) {}
 
-  constructor(private prisma: PrismaService) { }
-
-
-  private excludePassword(user: User): UserWithoutPassword {
-    const userWithoutPassword: User = { ...user };
-    delete userWithoutPassword.password;
-    return userWithoutPassword;
+  private datesToNumbers(user: UserWithoutPassword): UserInResponse {
+    return {
+      ...user,
+      createdAt: new Date(user.createdAt).getTime(),
+      updatedAt: new Date(user.updatedAt).getTime(),
+    };
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
+  async create(createUserDto: CreateUserDto): Promise<UserInResponse> {
     try {
       const newUser = await this.prisma.user.create({
         data: createUserDto,
         select: userSelectFields,
       });
-      return newUser;
+      return this.datesToNumbers(newUser);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
@@ -53,13 +55,12 @@ export class UsersService
     }
   }
 
-
-  async findAll(): Promise<UserWithoutPassword[]> {
+  async findAll(): Promise<UserInResponse[]> {
     const users = await this.prisma.user.findMany({ select: userSelectFields });
-    return users;
+    return users.map((user) => this.datesToNumbers(user));
   }
 
-  async findOne(id: string): Promise<UserWithoutPassword> {
+  async findOne(id: string): Promise<UserInResponse> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: userSelectFields,
@@ -67,34 +68,39 @@ export class UsersService
     if (!user) {
       throw new NotFoundException('Not found user with this userId');
     }
-    return user;
+    return this.datesToNumbers(user);
   }
 
-  update(
+  async update(
     id: string,
     updatePasswordDto: UpdatePasswordDto,
-  ): UserWithoutPassword {
-    const userIndex = this.users.findIndex((u) => u.id === id);
-    if (userIndex === -1) {
+  ): Promise<UserInResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-
-    if (this.users[userIndex].password !== updatePasswordDto.oldPassword) {
+    if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException(`Old password is invalid`);
     }
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        password: updatePasswordDto.newPassword,
+        version: user.version + 1,
+      },
+      select: userSelectFields,
+    });
 
-    const updatedUser: User = {
-      ...this.users[userIndex],
-      password: updatePasswordDto.newPassword,
-      version: this.users[userIndex].version + 1,
-      //updatedAt: Date.now(),
-    };
-
-    this.users[userIndex] = updatedUser;
-    return this.excludePassword(updatedUser);
+    return this.datesToNumbers(updatedUser);
   }
 
   async remove(id: string): Promise<void> {
-    await this.prisma.user.delete({ where: { id } });
+    try {
+      await this.prisma.user.delete({ where: { id } });
+    } catch {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
   }
 }
