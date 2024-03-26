@@ -16,7 +16,7 @@ const albumSelectFields = {
 export class AlbumsService
   implements CRUDService<AlbumInResponse, CreateAlbumDto, CreateAlbumDto>
 {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<AlbumInResponse> {
     const newAlbum = await this.prisma.album.create({

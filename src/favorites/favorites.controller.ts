@@ -15,52 +15,49 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.favoritesService.findAll();
   }
 
   @Post('track/:id')
   @UsePipes(new UuidValidator())
-  addTrackToFavorites(@Param('id') trackId: string) {
-    this.favoritesService.addTrackToFavorites(trackId);
+  async addTrackToFavorites(@Param('id') trackId: string) {
+    await this.favoritesService.addTrackToFavorites(trackId);
     return { message: 'Track added to favorites', statusCode: 201 };
   }
 
   @Delete('track/:id')
   @UsePipes(new UuidValidator())
   @HttpCode(204)
-  removeTrackFromFavorites(@Param('id') trackId: string) {
-    this.favoritesService.removeTrackFromFavorites(trackId);
-    return;
+  async removeTrackFromFavorites(@Param('id') trackId: string) {
+    await this.favoritesService.removeTrackFromFavorites(trackId);
   }
 
   @Post('album/:id')
   @UsePipes(new UuidValidator())
-  addAlbumToFavorites(@Param('id') albumId: string) {
-    this.favoritesService.addAlbumToFavorites(albumId);
+  async addAlbumToFavorites(@Param('id') albumId: string) {
+    await this.favoritesService.addAlbumToFavorites(albumId);
     return { message: 'Album added to favorites', statusCode: 201 };
   }
 
   @Delete('album/:id')
   @UsePipes(new UuidValidator())
   @HttpCode(204)
-  removeAlbumFromFavorites(@Param('id') albumId: string) {
-    this.favoritesService.removeAlbumFromFavorites(albumId);
-    return;
+  async removeAlbumFromFavorites(@Param('id') albumId: string) {
+    await this.favoritesService.removeAlbumFromFavorites(albumId);
   }
 
   @Post('artist/:id')
   @UsePipes(new UuidValidator())
-  addArtistToFavorites(@Param('id') artistId: string) {
-    this.favoritesService.addArtistToFavorites(artistId);
+  async addArtistToFavorites(@Param('id') artistId: string) {
+    await this.favoritesService.addArtistToFavorites(artistId);
     return { message: 'Artist added to favorites', statusCode: 201 };
   }
 
   @Delete('artist/:id')
   @UsePipes(new UuidValidator())
   @HttpCode(204)
-  removeArtistFromFavorites(@Param('id') artistId: string) {
-    this.favoritesService.removeArtistFromFavorites(artistId);
-    return;
+  async removeArtistFromFavorites(@Param('id') artistId: string) {
+    await this.favoritesService.removeArtistFromFavorites(artistId);
   }
 }

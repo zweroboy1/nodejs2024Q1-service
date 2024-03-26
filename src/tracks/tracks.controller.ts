@@ -18,7 +18,7 @@ import { UuidValidator } from 'src/shared/validators/uuid.validator';
 
 @Controller('Track')
 export class TracksController {
-  constructor(private readonly tracksService: TracksService) { }
+  constructor(private readonly tracksService: TracksService) {}
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()

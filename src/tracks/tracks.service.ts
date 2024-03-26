@@ -17,7 +17,7 @@ const trackSelectFields = {
 export class TracksService
   implements CRUDService<TrackInResponse, CreateTrackDto, CreateTrackDto>
 {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<TrackInResponse> {
     const newTrack = await this.prisma.track.create({
@@ -43,7 +43,10 @@ export class TracksService
     return track;
   }
 
-  async update(id: string, createTrackDto: CreateTrackDto): Promise<TrackInResponse> {
+  async update(
+    id: string,
+    createTrackDto: CreateTrackDto,
+  ): Promise<TrackInResponse> {
     const track = await this.prisma.track.findUnique({
       where: { id },
     });
@@ -65,9 +68,7 @@ export class TracksService
     return updatedTrack;
   }
 
-
   async remove(id: string): Promise<void> {
-
     try {
       await this.prisma.track.delete({ where: { id } });
     } catch {
