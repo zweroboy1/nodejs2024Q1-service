@@ -63,6 +63,12 @@ To run only the PostgreSQL database server in the container
 npm run docker:db-start
 ```
 
+To check your DB you can run Prisma Studio
+
+```
+npx prisma studio
+```
+
 To stop that PostgreSQL database server
 
 ```
@@ -131,3 +137,9 @@ Run this to check the vulnerabilities of the app
 ```
 npm run docker:scan
 ```
+
+## Important
+
+Tests run only when the app is running.
+The app operates only when the PostgreSQL Database Server is running.
+The PostgreSQL Database Server operates only when Docker Desktop is running.
