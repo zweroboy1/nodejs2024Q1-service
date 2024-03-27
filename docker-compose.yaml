@@ -1,0 +1,65 @@
+# https://docs.docker.com/go/compose-spec-reference/
+
+version: '3.8'
+
+networks:
+  custom_network:
+    driver: bridge
+
+services:
+  application:
+    image: zweroboy1/rss-node:application
+    container_name: node-server
+    restart: unless-stopped
+    build:
+      context: .
+    develop:
+      watch:
+        - action: sync
+          path: src
+          target: /usr/src/app/src
+        - action: rebuild
+          path: package.json
+
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL_FOR_APPLICATION}
+    networks:
+      - custom_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: zweroboy1/rss-node:db
+    container_name: postgres-db
+    restart: unless-stopped
+    build:
+      context: ./db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_INITDB_WALDIR: /var/log/postgresql
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - custom_network
+    healthcheck:
+      test:
+        ['CMD', 'pg_isready', '-U', '${POSTGRES_USER}', '-d', '${POSTGRES_DB}']
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
+  db-logs:

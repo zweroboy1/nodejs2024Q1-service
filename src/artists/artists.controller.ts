@@ -50,6 +50,6 @@ export class ArtistsController {
   @UsePipes(new UuidValidator())
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    this.artistsService.remove(id);
+    return this.artistsService.remove(id);
   }
 }

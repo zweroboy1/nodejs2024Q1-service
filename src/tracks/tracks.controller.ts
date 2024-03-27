@@ -50,6 +50,6 @@ export class TracksController {
   @UsePipes(new UuidValidator())
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    this.tracksService.remove(id);
+    return this.tracksService.remove(id);
   }
 }

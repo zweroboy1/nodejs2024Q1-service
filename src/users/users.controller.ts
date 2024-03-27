@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   HttpCode,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,10 +25,6 @@ export class UsersController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    const existingUser = this.usersService.findByLogin(createUserDto.login);
-    if (existingUser) {
-      throw new BadRequestException('User with this login already exists');
-    }
     return this.usersService.create(createUserDto);
   }
 
@@ -56,8 +53,8 @@ export class UsersController {
 
   @Delete(':id')
   @UsePipes(new UuidValidator())
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    this.usersService.remove(id);
+    return this.usersService.remove(id);
   }
 }
