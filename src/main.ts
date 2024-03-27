@@ -13,6 +13,7 @@ const readApiYaml = async () => {
 
 dotenv.config();
 const PORT = Number(process.env.PORT) || 4000;
+console.log(`Application is working here: http://localhost:${PORT}`);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
