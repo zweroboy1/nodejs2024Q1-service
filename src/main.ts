@@ -1,4 +1,5 @@
 import dotenv = require('dotenv');
+import dotenvExpand = require('dotenv-expand');
 import { NestFactory } from '@nestjs/core';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { load } from 'js-yaml';
@@ -11,7 +12,8 @@ const readApiYaml = async () => {
   return await readFile(yamlPath, 'utf-8');
 };
 
-dotenv.config();
+dotenvExpand.expand(dotenv.config());
+
 const PORT = Number(process.env.PORT) || 4000;
 console.log(`Application is working here: http://localhost:${PORT}`);
 
